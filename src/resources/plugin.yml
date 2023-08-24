@@ -1,0 +1,15 @@
+name: '${project.name}'
+version: '${project.version}'
+main: fr.zetioz.structuresmanager.StructuresManager
+authors: [ ZeTioZ ]
+website: https://zetioz.github.io/
+depend:
+  - WorldGuard
+  - WorldEdit
+softdepend:
+  - PlaceholderAPI
+
+commands:
+  structuresmanager:
+    aliases: [sm]
+    description: StructuresManager main command

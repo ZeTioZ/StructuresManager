@@ -1,0 +1,7 @@
+# You can add any region flag you want here, but make sure to add it to the list of flags
+# You just need to add the flag name and the value you want it to be
+wg-region-flags:
+  PVP: true
+# Some examples:
+#  MOB_DAMAGE: true
+#  MOB_SPAWNING: true

@@ -1,0 +1,58 @@
+prefix: "&2[&aStructuresManager&2]&r "
+
+# Messages
+help-command:
+  - "&2/{label} &c» &dDisplay this help page"
+  - "&2/{label} save <structure_name> &c» &dSave the structure you made at your location with the current wand selection"
+  - "&2/{label} place <structure_name> <structure_id> &c» &dPlace the structure you saved at your location"
+  - "&2/{label} delete <save/structure> <structure_name> &c» &dDelete the structure you saved"
+  - "&2/{label} tp <structure_name> &c» &dTeleport you to the placed structure"
+  - "&2/{label} reloadstruct <structure_id> &c» &dReload the structure with the given id"
+  - "&2/{label} reloadall &c» &dReload the already placed structures"
+  - "&2/{label} makewgregion <structure_id> &c» &dMake a WorldGuard region at the given structure id with the configured flags"
+  - "&2/{label} help &c» &dDisplay this help page"
+  - "&2/{label} reload &c» &dReload the plugin"
+
+reload-command:
+  - "&2Reloading..."
+
+structures-reload-success:
+  - "&aStructures reloaded!"
+
+structure-place-success:
+  - "&aStructure placed!"
+
+structure-save-success:
+  - "&aStructure saved!"
+
+structure-delete-success:
+  - "&aStructure &b{struct_name} &adeleted!"
+
+wg-region-make-success:
+  - "&aWorldGuard region made with the id {struct_name}!"
+
+structure-file-delete-success:
+  - "&aStructure file &b{struct_name}.schem &adeleted!"
+
+errors:
+  structure-reload-failed:
+    - "&cFailed to reload the structure &b{struct_name}&c, the schematic file must've been deleted!"
+  structure-place-failed:
+    - "&cFailed to place structure, make sure you saved it first!"
+  structure-delete-failed:
+    - "&cFailed to delete structure &b{struct_name}&c, make sure you placed it first!"
+  structure-file-delete-failed:
+    - "&cFailed to delete structure &b{struct_name}&c!"
+  structure-file-not-existing:
+    - "&cStructure file &b{struct_name} &cdoesn't exist!"
+  structure-not-existing:
+    - "&cStructure &b{struct_name} &cdoesn't exist!"
+  structure-already-existing:
+    - "&cStructure already exists!"
+    - "&cIf you want to override it, use &2/{label} delete {struct_name} &cand then &2/{label} place {struct_name}&c!"
+  structure-save-failed:
+    - "&cFailed to save structure, make sure you made a selection first!"
+  must-be-a-player:
+    - "&cYou must be a player to execute this command!"
+  not-enough-permission:
+    - "&cSorry, but you don't have enough permission to do that!"
