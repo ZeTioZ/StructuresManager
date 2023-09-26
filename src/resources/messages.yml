@@ -35,6 +35,10 @@ structure-file-delete-success:
   - "&aStructure file &b{struct_name}.schem &adeleted!"
 
 errors:
+  structure-already-whitelist-status:
+    - "&cStructure &b{struct_name} &chas already his blocks whitelist {status}!"
+  structure-already-can-build-status:
+    - "&cStructure &b{struct_name} &chas already his \"can-build\" flag {status}!"
   structure-reload-failed:
     - "&cFailed to reload the structure &b{struct_name}&c, the schematic file must've been deleted!"
   structure-place-failed:

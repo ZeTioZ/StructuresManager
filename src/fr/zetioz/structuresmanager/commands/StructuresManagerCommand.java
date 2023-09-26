@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import static fr.zetioz.coreutils.ColorUtils.sendMessage;
 
+// TODO: Full refactoring the commands
 public class StructuresManagerCommand implements TabExecutor, FilesManagerUtils.ReloadableFiles
 {
 	private final StructuresManager instance;

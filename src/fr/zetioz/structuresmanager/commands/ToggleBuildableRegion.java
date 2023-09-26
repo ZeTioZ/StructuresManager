@@ -11,13 +11,13 @@ import java.util.Map;
 
 import static fr.zetioz.coreutils.ColorUtils.sendMessage;
 
-public class ToggleBlockWhiteList implements FilesManagerUtils.ReloadableFiles
+public class ToggleBuildableRegion implements FilesManagerUtils.ReloadableFiles
 {
 	private final StructuresManager instance;
 	private YamlConfiguration messages;
 	private String prefix;
 
-	public ToggleBlockWhiteList(StructuresManager instance) throws FileNotFoundException
+	public ToggleBuildableRegion(StructuresManager instance) throws FileNotFoundException
 	{
 		this.instance = instance;
 		instance.getFilesManagerUtils().addReloadable(this);
@@ -40,13 +40,13 @@ public class ToggleBlockWhiteList implements FilesManagerUtils.ReloadableFiles
 			return true;
 		}
 		final Structure structure = structuresCache.get(regionID);
-		final boolean isWhiteListActive = structure.isWhiteListActive();
-		if(isWhiteListActive == value)
+		final boolean canBuild = structure.canBuild();
+		if(canBuild == value)
 		{
-			sendMessage(sender, "errors.structure-already-whitelist-status", prefix, "{status}", (value ? "enabled" : "disabled"));
+			sendMessage(sender, "errors.structure-already-can-build-status", prefix, "{status}", (value ? "enabled" : "disabled"));
 			return true;
 		}
-		structure.isWhiteListActive(value);
+		structure.canBuild(value);
 		return true;
 	}
 }

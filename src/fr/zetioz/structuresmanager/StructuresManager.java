@@ -2,6 +2,11 @@ package fr.zetioz.structuresmanager;
 
 import fr.zetioz.coreutils.FilesManagerUtils;
 import fr.zetioz.structuresmanager.commands.StructuresManagerCommand;
+import fr.zetioz.structuresmanager.databases.Database;
+import fr.zetioz.structuresmanager.databases.DatabaseWrapper;
+import fr.zetioz.structuresmanager.listeners.BlockBreakListener;
+import fr.zetioz.structuresmanager.listeners.BlockExplodeListener;
+import fr.zetioz.structuresmanager.listeners.BlockPlaceListener;
 import fr.zetioz.structuresmanager.objects.Structure;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -21,6 +26,7 @@ public final class StructuresManager extends JavaPlugin
 {
 	private static JavaPlugin plugin;
 	private FilesManagerUtils filesManagerUtils;
+	private Database database;
 
 	private Map<String, Structure> structuresCache;
 	private Map<String, List<Location>> blocksLocationsCache;
@@ -44,13 +50,17 @@ public final class StructuresManager extends JavaPlugin
 
 		try
 		{
+			database = DatabaseWrapper.getDatabase(this);
+			blocksLocationsCache = this.database.getAllRegionsBlocksLocations();
+
 			getCommand("structuresmanager").setExecutor(new StructuresManagerCommand(this));
-			final YamlConfiguration database = filesManagerUtils.getSimpleYaml("database");
-			database.getConfigurationSection("data").getKeys(false).forEach(key -> {
-				final Structure structure = database.getSerializable("data." + key, Structure.class);
+			final YamlConfiguration yamlDatabase = filesManagerUtils.getSimpleYaml("database");
+			yamlDatabase.getConfigurationSection("data").getKeys(false).forEach(key -> {
+				final Structure structure = yamlDatabase.getSerializable("data." + key, Structure.class);
 				structuresCache.put(key, structure);
 			});
 
+			registerEvents(new BlockBreakListener(this), new BlockExplodeListener(this), new BlockPlaceListener(this));
 		}
 		catch(Exception e)
 		{
