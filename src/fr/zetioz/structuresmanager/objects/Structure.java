@@ -4,10 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -18,16 +21,24 @@ public class Structure implements ConfigurationSerializable
 	private final String name;
 	private final String id;
 	private final Location location;
+	private final List<Material> blocksWhiteList;
 
 	@Accessors(fluent = true)
 	private boolean hasRegion;
+	@Accessors(fluent = true)
+	private boolean isWhiteListActive;
+	@Accessors(fluent = true)
+	private boolean canBuild;
 
 	public Structure(String name, String id, Location location)
 	{
 		this.name = name;
 		this.id = id;
 		this.location = location;
+		this.blocksWhiteList = new ArrayList<>();
 		this.hasRegion = false;
+		this.isWhiteListActive = false;
+		this.canBuild = false;
 	}
 
 	public Structure(Map<String, Object> map)
@@ -35,15 +46,21 @@ public class Structure implements ConfigurationSerializable
 		this.name = (String) map.get("name");
 		this.id = (String) map.get("id");
 		this.location = Location.deserialize((Map<String, Object>) map.get("location"));
+		this.blocksWhiteList = (List<Material>) map.get("blocksWhiteList");
 		this.hasRegion = (boolean) map.get("hasRegion");
+		this.isWhiteListActive = (boolean) map.get("isWhiteListActive");
+		this.canBuild = (boolean) map.get("canBuild");
 	}
 
-	public Structure(String name, String id, Location location, boolean hasRegion)
+	public Structure(String name, String id, Location location, List<Material> blocksWhiteList, boolean hasRegion, boolean isWhiteListActive, boolean canBuild)
 	{
 		this.name = name;
 		this.id = id;
 		this.location = location;
+		this.blocksWhiteList = blocksWhiteList;
 		this.hasRegion = hasRegion;
+		this.isWhiteListActive = isWhiteListActive;
+		this.canBuild = canBuild;
 	}
 
 	@NotNull
@@ -54,7 +71,10 @@ public class Structure implements ConfigurationSerializable
 				"name", name,
 				"id", id,
 				"location", location.serialize(),
-				"hasRegion", hasRegion
+				"blocksWhiteList", blocksWhiteList,
+				"hasRegion", hasRegion,
+				"isWhiteListActive", isWhiteListActive,
+				"canBuild", canBuild
 		);
 	}
 
@@ -64,7 +84,10 @@ public class Structure implements ConfigurationSerializable
 		final String name = (String) map.get("name");
 		final String id = (String) map.get("id");
 		final Location location = Location.deserialize((Map<String, Object>) map.get("location"));
+		final List<Material> blocksWhiteList = (List<Material>) map.get("blocksWhiteList");
 		final boolean hasRegion = (boolean) map.get("hasRegion");
-		return new Structure(name, id, location, hasRegion);
+		final boolean isWhiteListActive = (boolean) map.get("isWhiteListActive");
+		final boolean canBuild = (boolean) map.get("canBuild");
+		return new Structure(name, id, location, blocksWhiteList, hasRegion, isWhiteListActive, canBuild);
 	}
 }

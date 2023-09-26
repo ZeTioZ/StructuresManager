@@ -71,4 +71,9 @@ public class WorldGuardHook
 		while(regionExists(location, baseName + "_" + i++));
 		return name;
 	}
+
+	public static List<String> getRegionIDs(Location location)
+	{
+		return WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(location.getWorld())).getApplicableRegionsIDs(BlockVector3.at(location.getX(), location.getY(), location.getZ()));
+	}
 }

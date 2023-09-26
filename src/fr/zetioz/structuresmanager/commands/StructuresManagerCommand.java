@@ -138,6 +138,9 @@ public class StructuresManagerCommand implements TabExecutor, FilesManagerUtils.
 								final boolean result = SchematicUtilsWE7.pasteSchematic(instance, struct.getName(), struct.getLocation());
 								if(result)
 								{
+									instance.getBlocksLocationsCache().remove(structName);
+									instance.getBlocksLocationsAddCache().remove(structName);
+									instance.getBlocksLocationsRemoveCache().remove(structName);
 									if(config.getBoolean("debug"))
 									{
 										sendMessage(sender, messages.getStringList("structure-reloaded"), prefix, "{struct_name}", structName);
@@ -154,10 +157,14 @@ public class StructuresManagerCommand implements TabExecutor, FilesManagerUtils.
 						{
 							if(structuresCache.containsKey(args[1]))
 							{
-								final Structure struct = structuresCache.get(args[1]);
+								final String structName = args[1];
+								final Structure struct = structuresCache.get(structName);
 								final boolean result = SchematicUtilsWE7.pasteSchematic(instance, struct.getName(), struct.getLocation());
 								if(result)
 								{
+									instance.getBlocksLocationsCache().remove(structName);
+									instance.getBlocksLocationsAddCache().remove(structName);
+									instance.getBlocksLocationsRemoveCache().remove(structName);
 									sendMessage(sender, messages.getStringList("structure-reloaded"), prefix, "{struct_name}", args[1]);
 								}
 								else

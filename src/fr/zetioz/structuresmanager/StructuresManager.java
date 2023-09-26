@@ -5,6 +5,7 @@ import fr.zetioz.structuresmanager.commands.StructuresManagerCommand;
 import fr.zetioz.structuresmanager.objects.Structure;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -21,12 +23,18 @@ public final class StructuresManager extends JavaPlugin
 	private FilesManagerUtils filesManagerUtils;
 
 	private Map<String, Structure> structuresCache;
+	private Map<String, List<Location>> blocksLocationsCache;
+	private Map<String, List<Location>> blocksLocationsAddCache;
+	private Map<String, List<Location>> blocksLocationsRemoveCache;
 
 	@Override
 	public void onEnable()
 	{
 		plugin = this;
 		structuresCache = new HashMap<>();
+		blocksLocationsCache = new HashMap<>();
+		blocksLocationsAddCache = new HashMap<>();
+		blocksLocationsRemoveCache = new HashMap<>();
 		filesManagerUtils = new FilesManagerUtils(this);
 		ConfigurationSerialization.registerClass(Structure.class);
 
@@ -46,7 +54,7 @@ public final class StructuresManager extends JavaPlugin
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			getLogger().severe("An error occurred while loading the plugin: " + e.getMessage());
 		}
 	}
 

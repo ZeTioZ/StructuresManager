@@ -120,7 +120,7 @@
 
 		<dependency>
 			<groupId>fr.zetioz</groupId>
-			<artifactId>coreutils</artifactId>
+			<artifactId>CoreUtils</artifactId>
 			<version>1.4.2</version>
 			<scope>compile</scope>
 		</dependency>
