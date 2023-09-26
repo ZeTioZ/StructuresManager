@@ -1,7 +1,7 @@
 package fr.zetioz.structuresmanager;
 
 import fr.zetioz.coreutils.FilesManagerUtils;
-import fr.zetioz.structuresmanager.commands.StructuresManagerCommand;
+import fr.zetioz.structuresmanager.commands.CommandsHandler;
 import fr.zetioz.structuresmanager.databases.Database;
 import fr.zetioz.structuresmanager.databases.DatabaseWrapper;
 import fr.zetioz.structuresmanager.listeners.BlockBreakListener;
@@ -53,7 +53,7 @@ public final class StructuresManager extends JavaPlugin
 			database = DatabaseWrapper.getDatabase(this);
 			blocksLocationsCache = this.database.getAllRegionsBlocksLocations();
 
-			getCommand("structuresmanager").setExecutor(new StructuresManagerCommand(this));
+			getCommand("structuresmanager").setExecutor(new CommandsHandler(this));
 			final YamlConfiguration yamlDatabase = filesManagerUtils.getSimpleYaml("database");
 			yamlDatabase.getConfigurationSection("data").getKeys(false).forEach(key -> {
 				final Structure structure = yamlDatabase.getSerializable("data." + key, Structure.class);
