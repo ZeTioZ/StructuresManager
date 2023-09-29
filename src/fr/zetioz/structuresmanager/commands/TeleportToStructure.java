@@ -34,6 +34,7 @@ public class TeleportToStructure
 				final Structure struct = structuresCache.get(args[1]);
 				final Location loc = struct.getLocation();
 				player.teleport(loc.clone().add(0, 1, 0));
+				sendMessage(player, messages.getStringList("teleport-to-structure-success"), prefix, "{struct_name}", args[1]);
 			}
 			else
 			{

@@ -1,6 +1,5 @@
 package fr.zetioz.structuresmanager.commands;
 
-import fr.zetioz.coreutils.FilesManagerUtils;
 import fr.zetioz.structuresmanager.StructuresManager;
 import fr.zetioz.structuresmanager.objects.Structure;
 import org.bukkit.command.CommandSender;
@@ -10,13 +9,13 @@ import java.util.Map;
 
 import static fr.zetioz.coreutils.ColorUtils.sendMessage;
 
-public class ToggleBuildableRegion
+public class ToggleBlocksWhitelist
 {
 	private final StructuresManager instance;
 	private YamlConfiguration messages;
 	private String prefix;
 
-	public ToggleBuildableRegion(StructuresManager instance, YamlConfiguration messages)
+	public ToggleBlocksWhitelist(StructuresManager instance, YamlConfiguration messages)
 	{
 		this.instance = instance;
 		this.messages = messages;
@@ -25,7 +24,7 @@ public class ToggleBuildableRegion
 
 	public boolean command(CommandSender sender, String[] args, boolean value)
 	{
-		if(sender.hasPermission("structuresmanagers.toggle.buildable"))
+		if(sender.hasPermission("structuresmanager.toggle.whitelist"))
 		{
 			final Map<String, Structure> structuresCache = instance.getStructuresCache();
 			if(!structuresCache.containsKey(args[2]))
@@ -34,20 +33,19 @@ public class ToggleBuildableRegion
 				return true;
 			}
 			final Structure structure = structuresCache.get(args[2]);
-			final boolean canBuild = structure.canBuild();
-			if(canBuild == value)
+			final boolean isWhiteListActive = structure.isWhiteListActive();
+			if(isWhiteListActive == value)
 			{
-				sendMessage(sender, messages.getStringList("errors.structure-already-can-build-status"), prefix, "{status}", (value ? "enabled" : "disabled"));
+				sendMessage(sender, messages.getStringList("errors.structure-already-whitelist-status"), prefix, "{status}", (value ? "enabled" : "disabled"));
 				return true;
 			}
-			structure.canBuild(value);
-			sendMessage(sender, messages.getStringList("buildable-toggle-success"), prefix, "{status}", (value ? "enabled" : "disabled"), "{struct_name}", args[2]);
+			structure.isWhiteListActive(value);
+			sendMessage(sender, messages.getStringList("whitelist-toggle-success"), prefix, "{status}", (value ? "enabled" : "disabled"), "{struct_name}", args[2]);
 		}
 		else
 		{
 			sendMessage(sender, messages.getStringList("errors.not-enough-permission"), prefix);
 		}
 		return true;
-
 	}
 }

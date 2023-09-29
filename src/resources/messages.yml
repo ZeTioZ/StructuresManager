@@ -7,8 +7,7 @@ help-command:
   - "&2/{label} place <structure_name> <structure_id> &c» &dPlace the structure you saved at your location"
   - "&2/{label} delete <save/structure> <structure_name> &c» &dDelete the structure you saved"
   - "&2/{label} tp <structure_name> &c» &dTeleport you to the placed structure"
-  - "&2/{label} reloadstruct <structure_id> &c» &dReload the structure with the given id"
-  - "&2/{label} reloadall &c» &dReload the already placed structures"
+  - "&2/{label} reset <structure_id/all> &c» &dReset the structure with the given id or all structures"
   - "&2/{label} makewgregion <structure_id> &c» &dMake a WorldGuard region at the given structure id with the configured flags"
   - "&2/{label} help &c» &dDisplay this help page"
   - "&2/{label} reload &c» &dReload the plugin"
@@ -16,8 +15,11 @@ help-command:
 reload-command:
   - "&2Reloading..."
 
-structures-reload-success:
-  - "&aStructures reloaded!"
+teleport-to-structure-success:
+  - "&aTeleported to the structure &b{struct_name}&a!"
+
+structures-reset-success:
+  - "&aStructures reset!"
 
 structure-place-success:
   - "&aStructure placed!"
@@ -34,13 +36,25 @@ wg-region-make-success:
 structure-file-delete-success:
   - "&aStructure file &b{struct_name}.schem &adeleted!"
 
+buildable-toggle-success:
+  - "&aStructure &b{struct_name}'s &abuildable flag is now &b{status}&a!"
+
+whitelist-toggle-success:
+  - "&aStructure &b{struct_name}'s &awhitelist is now &b{status}&a!"
+
+material-add-success:
+  - "&aMaterial &b{material} &aadded to the whitelist of the structure &b{struct_name}&a!"
+
+material-remove-success:
+  - "&aMaterial &b{material} &aremoved from the whitelist of the structure &b{struct_name}&a!"
+
 errors:
   structure-already-whitelist-status:
     - "&cStructure &b{struct_name} &chas already his blocks whitelist {status}!"
   structure-already-can-build-status:
     - "&cStructure &b{struct_name} &chas already his \"can-build\" flag {status}!"
-  structure-reload-failed:
-    - "&cFailed to reload the structure &b{struct_name}&c, the schematic file must've been deleted!"
+  structure-reset-failed:
+    - "&cFailed to reset the structure &b{struct_name}&c, the schematic file must've been deleted!"
   structure-place-failed:
     - "&cFailed to place structure, make sure you saved it first!"
   structure-delete-failed:
@@ -56,6 +70,13 @@ errors:
     - "&cIf you want to override it, use &2/{label} delete {struct_name} &cand then &2/{label} place {struct_name}&c!"
   structure-save-failed:
     - "&cFailed to save structure, make sure you made a selection first!"
+  material-already-whitelisted:
+    - "&cMaterial &b{material} &cis already whitelisted!"
+  material-not-whitelisted:
+    - "&cMaterial &b{material} &cis not whitelisted!"
+  material-not-existing:
+    - "&cMaterial &b{material} &cdoesn't exist!"
+    - "Please check the material name at &2https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html"
   must-be-a-player:
     - "&cYou must be a player to execute this command!"
   not-enough-permission:

@@ -1,8 +1,10 @@
 package fr.zetioz.structuresmanager.commands;
 
+import fr.zetioz.coreutils.EnumCheckUtils;
 import fr.zetioz.coreutils.FilesManagerUtils;
 import fr.zetioz.structuresmanager.StructuresManager;
 import fr.zetioz.structuresmanager.objects.Structure;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -74,7 +76,7 @@ public class CommandsHandler implements TabExecutor, FilesManagerUtils.Reloadabl
 				{
 					return new MakeWorldGuardRegion(instance, config, messages).command(sender, args, label);
 				}
-				if(args[0].equalsIgnoreCase("reset"))
+				else if(args[0].equalsIgnoreCase("reset"))
 				{
 					return new ResetStructure(instance, config, messages).command(sender, args, label);
 				}
@@ -96,16 +98,7 @@ public class CommandsHandler implements TabExecutor, FilesManagerUtils.Reloadabl
 			}
 			else if(args.length == 3)
 			{
-				if (!(sender instanceof final Player player))
-				{
-					sendMessage(sender, messages.getStringList("errors.must-be-a-player"), prefix);
-					return true;
-				}
-				if(args[0].equalsIgnoreCase("place"))
-				{
-					return new PlaceStructure(instance, messages).command(player, args, label);
-				}
-				else if(args[0].equalsIgnoreCase("delete"))
+				if(args[0].equalsIgnoreCase("delete"))
 				{
 					if(args[1].equalsIgnoreCase("save"))
 					{
@@ -114,6 +107,45 @@ public class CommandsHandler implements TabExecutor, FilesManagerUtils.Reloadabl
 					else if(args[1].equalsIgnoreCase("structure"))
 					{
 						new DeleteStructure(instance, messages).command(sender, args, label);
+					}
+				}
+				else if(args[0].equalsIgnoreCase("toggle"))
+				{
+					final Structure structure = instance.getStructuresCache().get(args[2]);
+					if(args[1].equalsIgnoreCase("build"))
+					{
+						final boolean canBuild = structure.canBuild();
+						return new ToggleBuildableRegion(instance, messages).command(sender, args, !canBuild);
+					}
+					else if(args[1].equalsIgnoreCase("whitelist"))
+					{
+						final boolean whitelist = structure.isWhiteListActive();
+						return new ToggleBlocksWhitelist(instance, messages).command(sender, args, !whitelist);
+					}
+				}
+
+				if (!(sender instanceof final Player player))
+				{
+					sendMessage(sender, messages.getStringList("errors.must-be-a-player"), prefix);
+					return true;
+				}
+
+				if(args[0].equalsIgnoreCase("place"))
+				{
+					return new PlaceStructure(instance, messages).command(player, args, label);
+				}
+			}
+			else if(args.length == 4)
+			{
+				if(args[0].equalsIgnoreCase("whitelist"))
+				{
+					if(args[1].equalsIgnoreCase("add"))
+					{
+						new AddMaterialToWhitelist(instance, messages).command(sender, args, label);
+					}
+					else if(args[1].equalsIgnoreCase("remove"))
+					{
+						new RemoveMaterialFromWhitelist(instance, messages).command(sender, args, label);
 					}
 				}
 			}
@@ -172,6 +204,28 @@ public class CommandsHandler implements TabExecutor, FilesManagerUtils.Reloadabl
 				else if(args[1].equalsIgnoreCase("structure"))
 				{
 					StringUtil.copyPartialMatches(args[2], instance.getStructuresCache().keySet(), completions);
+				}
+			}
+			else if(args.length == 3 && args[0].equalsIgnoreCase("whitelist"))
+			{
+				if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("remove"))
+				{
+					StringUtil.copyPartialMatches(args[2], instance.getStructuresCache().keySet(), completions);
+				}
+			}
+			else if(args.length == 4 && args[0].equalsIgnoreCase("whitelist"))
+			{
+				if(args[1].equalsIgnoreCase("add"))
+				{
+					final Structure structure = instance.getStructuresCache().get(args[2]);
+					final List<String> materials = new ArrayList<>(Stream.of(Material.values()).map(Enum::name).toList());
+					materials.removeAll(structure.getBlocksWhiteList().stream().map(Enum::name).toList());
+					StringUtil.copyPartialMatches(args[3], materials, completions);
+				}
+				else if(args[1].equalsIgnoreCase("remove"))
+				{
+					final Structure structure = instance.getStructuresCache().get(args[2]);
+					StringUtil.copyPartialMatches(args[3], structure.getBlocksWhiteList().stream().map(Enum::name).toList(), completions);
 				}
 			}
 			Collections.sort(completions);

@@ -44,15 +44,15 @@ public class ResetStructure
 						instance.getBlocksLocationsRemoveCache().remove(structName);
 						if(config.getBoolean("debug"))
 						{
-							sendMessage(sender, messages.getStringList("structure-reloaded"), prefix, "{struct_name}", structName);
+							sendMessage(sender, messages.getStringList("structure-reset"), prefix, "{struct_name}", structName);
 						}
 					}
 					else
 					{
-						sendMessage(sender, messages.getStringList("errors.structure-reload-failed"), prefix, "{struct_name}", structName);
+						sendMessage(sender, messages.getStringList("errors.structure-reset-failed"), prefix, "{struct_name}", structName);
 					}
 				}
-				sendMessage(sender, messages.getStringList("structures-reload-success"), prefix);
+				sendMessage(sender, messages.getStringList("structures-reset-success"), prefix);
 			}
 			else
 			{
