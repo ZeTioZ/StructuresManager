@@ -49,6 +49,7 @@ public class BlockPlaceListener implements Listener
 			final List<Location> blocksLocations = blocksLocationsCache.getOrDefault(regionID, new ArrayList<>());
 			final List<Location> blocksLocationsToAdd = blocksLocationsAddCache.getOrDefault(regionID, new ArrayList<>());
 			final List<Location> blocksLocationsToRemove = blocksLocationsRemoveCache.getOrDefault(regionID, new ArrayList<>());
+
 			if(blocksLocationsToAdd.contains(location) || blocksLocations.contains(location)) continue;
 			blocksLocations.add(location);
 			blocksLocationsToAdd.add(location);

@@ -22,7 +22,7 @@ import static fr.zetioz.structuresmanager.hooks.SchematicUtilsWE7.getSchematicCl
 
 public class WorldGuardHook
 {
-	public static void makeStructRegion(StructuresManager instance, Structure struct, Map<String, Boolean> flags, List<String> members, List<String> owners)
+	public static void makeStructureRegion(StructuresManager instance, Structure struct, Map<String, Boolean> flags, List<String> members, List<String> owners)
 	{
 		final String structureName = struct.getName();
 		final String structureId = struct.getId();

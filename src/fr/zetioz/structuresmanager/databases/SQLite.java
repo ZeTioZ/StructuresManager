@@ -36,20 +36,23 @@ public class SQLite extends Database
     {
         try
         {
-            if(this.connection != null && !this.connection.isClosed()) return this.connection;
+            if(this.connection != null && !this.connection.isClosed())
+            {
+                return this.connection;
+            }
 
             Class.forName("org.sqlite.JDBC");
             this.connection = getConnection("jdbc:sqlite:" + getInstance().getDataFolder().getAbsolutePath() + File.separator + dbname + ".db");
             this.connection.createStatement().executeUpdate("PRAGMA foreign_keys = ON;");
             return this.connection;
         }
-        catch (final ClassNotFoundException e)
+        catch(final ClassNotFoundException e)
         {
-			getInstance().getLogger().log(Level.SEVERE, "You need the SQLite JBDC library. Google it. Put it in /lib folder.");
+            getInstance().getLogger().log(Level.SEVERE, "You need the SQLite JBDC library. Google it. Put it in /lib folder.");
         }
-        catch (final SQLException e)
+        catch(final SQLException e)
         {
-			getInstance().getLogger().log(Level.SEVERE, "SQLite exception on initialize:", e);
+            getInstance().getLogger().log(Level.SEVERE, "SQLite exception on initialize:", e);
         }
         return null;
     }
@@ -58,10 +61,17 @@ public class SQLite extends Database
     public void load()
     {
         final File dataFolder = new File(getInstance().getDataFolder(), dbname + ".db");
-        if (!dataFolder.exists()) {
-            try {
-                dataFolder.createNewFile();
-            } catch (IOException e) {
+        if(!dataFolder.exists())
+        {
+            try
+            {
+                if(!dataFolder.createNewFile())
+                {
+                    getInstance().getLogger().log(Level.SEVERE, "File write error: " + dbname + ".db");
+                }
+            }
+            catch(IOException e)
+            {
                 getInstance().getLogger().log(Level.SEVERE, "File write error: " + dbname + ".db");
             }
         }
@@ -70,8 +80,9 @@ public class SQLite extends Database
             s.executeUpdate(SQLCreateTable);
             s.executeUpdate("PRAGMA foreign_keys = ON;");
         }
-        catch (SQLException e) {
-            getInstance().getLogger().log(Level.SEVERE, "SQLite exception on initialize", e);
+        catch(SQLException ex)
+        {
+            getInstance().getLogger().log(Level.SEVERE, "SQLite exception on initialize", ex);
         }
     }
 }

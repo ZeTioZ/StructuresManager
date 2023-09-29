@@ -36,16 +36,10 @@ public class BlockBreakListener implements Listener
 		{
 			if(!structuresCache.containsKey(regionID)) continue;
 			final Structure structure = structuresCache.get(regionID);
-			if(!structure.canBuild())
-			{
-				event.setCancelled(true);
-				return;
-			}
-
 			final List<Location> blocksLocations = blocksLocationsCache.getOrDefault(regionID, new ArrayList<>());
 			final List<Location> blocksLocationsToAdd = blocksLocationsAddCache.getOrDefault(regionID, new ArrayList<>());
 
-			if(!(blocksLocations.contains(blockLocation) || blocksLocationsToAdd.contains(blockLocation)))
+			if(!structure.canBuild() || !(blocksLocations.contains(blockLocation) || blocksLocationsToAdd.contains(blockLocation)))
 			{
 				event.setCancelled(true);
 				return;

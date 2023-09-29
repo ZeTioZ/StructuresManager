@@ -73,6 +73,8 @@ public final class StructuresManager extends JavaPlugin
 	{
 		try
 		{
+			database.removeBlocksLocations();
+			database.saveBlocksLocation();
 			filesManagerUtils.getSimpleYaml("database").set("data", structuresCache);
 			filesManagerUtils.saveSimpleYaml("database");
 		}

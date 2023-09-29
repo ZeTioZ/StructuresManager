@@ -1,6 +1,5 @@
 package fr.zetioz.structuresmanager.commands;
 
-import fr.zetioz.coreutils.FilesManagerUtils;
 import fr.zetioz.structuresmanager.StructuresManager;
 import fr.zetioz.structuresmanager.hooks.WorldGuardHook;
 import fr.zetioz.structuresmanager.objects.Structure;
@@ -36,7 +35,7 @@ public class MakeWorldGuardRegion
 			{
 				final Structure struct = structuresCache.get(args[1]);
 				final Map<String, Boolean> regionFlags = config.getConfigurationSection("wg-region-flags").getValues(false).entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (boolean) e.getValue()));
-				WorldGuardHook.makeStructRegion(instance, struct, regionFlags, null, null);
+				WorldGuardHook.makeStructureRegion(instance, struct, regionFlags, null, null);
 				struct.hasRegion(true);
 				sendMessage(sender, messages.getStringList("wg-region-make-success"), prefix, "{struct_name}", args[1]);
 			}

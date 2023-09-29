@@ -68,9 +68,9 @@ public class SchematicUtilsWE7
 				writer.write(clipboard);
 			}
 		}
-		catch(WorldEditException | IOException e1)
+		catch(WorldEditException | IOException ex)
 		{
-			e1.printStackTrace();
+			instance.getLogger().severe("Something went wrong while saving the schematic to file:" + ex.getMessage());
 		}
 		return true;
 	}
