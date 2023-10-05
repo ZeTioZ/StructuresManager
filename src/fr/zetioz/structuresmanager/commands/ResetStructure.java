@@ -3,19 +3,22 @@ package fr.zetioz.structuresmanager.commands;
 import fr.zetioz.structuresmanager.StructuresManager;
 import fr.zetioz.structuresmanager.hooks.SchematicUtilsWE7;
 import fr.zetioz.structuresmanager.objects.Structure;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static fr.zetioz.coreutils.ColorUtils.sendMessage;
 
 public class ResetStructure
 {
 	private final StructuresManager instance;
-	private YamlConfiguration messages;
-	private YamlConfiguration config;
-	private String prefix;
+	private final YamlConfiguration messages;
+	private final YamlConfiguration config;
+	private final String prefix;
 
 	public ResetStructure(StructuresManager instance, YamlConfiguration config, YamlConfiguration messages)
 	{
@@ -39,9 +42,10 @@ public class ResetStructure
 					final boolean result = SchematicUtilsWE7.pasteSchematic(instance, struct.getName(), struct.getLocation());
 					if(result)
 					{
-						instance.getBlocksLocationsCache().remove(structName);
+						final Set<Location> blocksLocationToRemove = instance.getBlocksLocationsRemoveCache().getOrDefault(structName, new HashSet<>());
+						blocksLocationToRemove.addAll(instance.getBlocksLocationsCache().getOrDefault(structName, new HashSet<>()));
+						instance.getBlocksLocationsRemoveCache().put(structName, blocksLocationToRemove);
 						instance.getBlocksLocationsAddCache().remove(structName);
-						instance.getBlocksLocationsRemoveCache().remove(structName);
 						if(config.getBoolean("debug"))
 						{
 							sendMessage(sender, messages.getStringList("structure-reset"), prefix, "{struct_name}", structName);
@@ -63,9 +67,10 @@ public class ResetStructure
 					final boolean result = SchematicUtilsWE7.pasteSchematic(instance, struct.getName(), struct.getLocation());
 					if(result)
 					{
-						instance.getBlocksLocationsCache().remove(structName);
+						final Set<Location> blocksLocationToRemove = instance.getBlocksLocationsRemoveCache().getOrDefault(structName, new HashSet<>());
+						blocksLocationToRemove.addAll(instance.getBlocksLocationsCache().getOrDefault(structName, new HashSet<>()));
+						instance.getBlocksLocationsRemoveCache().put(structName, blocksLocationToRemove);
 						instance.getBlocksLocationsAddCache().remove(structName);
-						instance.getBlocksLocationsRemoveCache().remove(structName);
 						sendMessage(sender, messages.getStringList("structure-reloaded"), prefix, "{struct_name}", args[1]);
 					}
 					else

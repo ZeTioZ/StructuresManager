@@ -12,8 +12,8 @@ import static fr.zetioz.coreutils.ColorUtils.sendMessage;
 public class DeleteSave
 {
 	private final StructuresManager instance;
-	private YamlConfiguration messages;
-	private String prefix;
+	private final YamlConfiguration messages;
+	private final String prefix;
 
 	public DeleteSave(StructuresManager instance, YamlConfiguration messages)
 	{

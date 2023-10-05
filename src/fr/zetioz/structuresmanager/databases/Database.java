@@ -44,11 +44,11 @@ public abstract class Database
 	/**
 	 * Get the saved blocks locations of all regions from the database
 	 *
-	 * @return a {@link Map} of {@link String} and {@link List} of {@link Location} containing the saved blocks locations
+	 * @return a {@link Map} of {@link String} and {@link Set} of {@link Location} containing the saved blocks locations
 	 */
-	public Map<String, List<Location>> getAllRegionsBlocksLocations()
+	public Map<String, Set<Location>> getAllRegionsBlocksLocations()
 	{
-		final Map<String, List<Location>> allRegionsBlocksLocations = new HashMap<>();
+		final Map<String, Set<Location>> allRegionsBlocksLocations = new HashMap<>();
 		try(Connection conn = getSQLConnection();
 		    PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + tablePrefix + "SAVED_BLOCK;");
 		    ResultSet rs = stmt.executeQuery())
@@ -64,7 +64,7 @@ public abstract class Database
 				final double z = rs.getDouble("Z");
 				final Location blockLocation = new Location(world, x, y, z);
 
-				allRegionsBlocksLocations.putIfAbsent(regionID, new ArrayList<>());
+				allRegionsBlocksLocations.putIfAbsent(regionID, new HashSet<>());
 				allRegionsBlocksLocations.get(regionID).add(blockLocation);
 			}
 		}
@@ -80,11 +80,11 @@ public abstract class Database
 	 * Used to alleviate the SQL server
 	 *
 	 * @param regionID ID of the region to get the saved blocks locations from
-	 * @return a {@link Map} of {@link String} and {@link List} of {@link Location} containing the saved blocks locations
+	 * @return a {@link Map} of {@link String} and {@link Set} of {@link Location} containing the saved blocks locations
 	 */
-	public List<Location> getRegionBlocksLocations(String regionID)
+	public Set<Location> getRegionBlocksLocations(String regionID)
 	{
-		final List<Location> regionBlocksLocations = new ArrayList<>();
+		final Set<Location> regionBlocksLocations = new HashSet<>();
 		try(Connection conn = getSQLConnection();
 		    PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + tablePrefix + "SAVED_BLOCK WHERE REGION_ID = " + regionID + ";");
 		    ResultSet rs = stmt.executeQuery())
@@ -121,7 +121,7 @@ public abstract class Database
 			conn.setAutoCommit(false);
 			try(PreparedStatement ps = conn.prepareStatement("DELETE FROM " + tablePrefix + "SAVED_BLOCK WHERE REGION_ID = ? AND WORLD = ? AND X = ? AND Y = ? AND Z = ?;"))
 			{
-				for(Map.Entry<String, List<Location>> regionBlocksLocationsToRemove : instance.getBlocksLocationsRemoveCache().entrySet())
+				for(Map.Entry<String, Set<Location>> regionBlocksLocationsToRemove : instance.getBlocksLocationsRemoveCache().entrySet())
 				{
 					final String regionID = regionBlocksLocationsToRemove.getKey();
 					for(final Location blockLocation : regionBlocksLocationsToRemove.getValue())
@@ -180,7 +180,7 @@ public abstract class Database
 			conn.setAutoCommit(false);
 			try(PreparedStatement ps = conn.prepareStatement("REPLACE INTO " + tablePrefix + "SAVED_BLOCK(REGION_ID, WORLD, X, Y, Z) VALUES (?, ?, ?, ?, ?);"))
 			{
-				for(Map.Entry<String, List<Location>> regionBlocksLocations : instance.getBlocksLocationsAddCache().entrySet())
+				for(Map.Entry<String, Set<Location>> regionBlocksLocations : instance.getBlocksLocationsAddCache().entrySet())
 				{
 					final String regionID = regionBlocksLocations.getKey();
 					for(Location blockLocation : regionBlocksLocations.getValue())

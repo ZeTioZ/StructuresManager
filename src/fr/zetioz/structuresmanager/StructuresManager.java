@@ -6,6 +6,7 @@ import fr.zetioz.structuresmanager.databases.Database;
 import fr.zetioz.structuresmanager.databases.DatabaseWrapper;
 import fr.zetioz.structuresmanager.listeners.BlockBreakListener;
 import fr.zetioz.structuresmanager.listeners.BlockExplodeListener;
+import fr.zetioz.structuresmanager.listeners.BlockIgniteListener;
 import fr.zetioz.structuresmanager.listeners.BlockPlaceListener;
 import fr.zetioz.structuresmanager.objects.Structure;
 import lombok.Getter;
@@ -18,8 +19,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 public final class StructuresManager extends JavaPlugin
@@ -29,9 +30,9 @@ public final class StructuresManager extends JavaPlugin
 	private Database database;
 
 	private Map<String, Structure> structuresCache;
-	private Map<String, List<Location>> blocksLocationsCache;
-	private Map<String, List<Location>> blocksLocationsAddCache;
-	private Map<String, List<Location>> blocksLocationsRemoveCache;
+	private Map<String, Set<Location>> blocksLocationsCache;
+	private Map<String, Set<Location>> blocksLocationsAddCache;
+	private Map<String, Set<Location>> blocksLocationsRemoveCache;
 
 	@Override
 	public void onEnable()
@@ -55,12 +56,15 @@ public final class StructuresManager extends JavaPlugin
 
 			getCommand("structuresmanager").setExecutor(new CommandsHandler(this));
 			final YamlConfiguration yamlDatabase = filesManagerUtils.getSimpleYaml("database");
-			yamlDatabase.getConfigurationSection("data").getKeys(false).forEach(key -> {
-				final Structure structure = yamlDatabase.getSerializable("data." + key, Structure.class);
-				structuresCache.put(key, structure);
-			});
+			if(yamlDatabase.isConfigurationSection("data"))
+			{
+				yamlDatabase.getConfigurationSection("data").getKeys(false).forEach(key -> {
+					final Structure structure = yamlDatabase.getSerializable("data." + key, Structure.class);
+					structuresCache.put(key, structure);
+				});
+			}
 
-			registerEvents(new BlockBreakListener(this), new BlockExplodeListener(this), new BlockPlaceListener(this));
+			registerEvents(new BlockBreakListener(this), new BlockExplodeListener(this), new BlockPlaceListener(this), new BlockIgniteListener(this));
 		}
 		catch(Exception e)
 		{

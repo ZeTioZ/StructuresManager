@@ -1,6 +1,5 @@
 package fr.zetioz.structuresmanager.commands;
 
-import fr.zetioz.coreutils.EnumCheckUtils;
 import fr.zetioz.coreutils.FilesManagerUtils;
 import fr.zetioz.structuresmanager.StructuresManager;
 import fr.zetioz.structuresmanager.objects.Structure;
@@ -102,11 +101,11 @@ public class CommandsHandler implements TabExecutor, FilesManagerUtils.Reloadabl
 				{
 					if(args[1].equalsIgnoreCase("save"))
 					{
-						new DeleteSave(instance, messages).command(sender, args, getStructuresFiles());
+						return new DeleteSave(instance, messages).command(sender, args, getStructuresFiles());
 					}
 					else if(args[1].equalsIgnoreCase("structure"))
 					{
-						new DeleteStructure(instance, messages).command(sender, args, label);
+						return new DeleteStructure(instance, messages).command(sender, args, label);
 					}
 				}
 				else if(args[0].equalsIgnoreCase("toggle"))
@@ -141,11 +140,11 @@ public class CommandsHandler implements TabExecutor, FilesManagerUtils.Reloadabl
 				{
 					if(args[1].equalsIgnoreCase("add"))
 					{
-						new AddMaterialToWhitelist(instance, messages).command(sender, args, label);
+						return new AddMaterialToWhitelist(instance, messages).command(sender, args, label);
 					}
 					else if(args[1].equalsIgnoreCase("remove"))
 					{
-						new RemoveMaterialFromWhitelist(instance, messages).command(sender, args, label);
+						return new RemoveMaterialFromWhitelist(instance, messages).command(sender, args, label);
 					}
 				}
 			}
@@ -164,7 +163,7 @@ public class CommandsHandler implements TabExecutor, FilesManagerUtils.Reloadabl
 			final List<String> firstArgList = new ArrayList<>();
 			final List<String> completions = new ArrayList<>();
 
-			if(sender.hasPermission("structuresmanager.reload")) firstArgList.addAll(List.of("help", "reload", "place", "save", "delete", "makewgregion", "reset"));
+			if(sender.hasPermission("structuresmanager.reload")) firstArgList.addAll(List.of("help", "reload", "place", "save", "delete", "makewgregion", "reset", "whitelist", "toggle"));
 
 			if(args.length == 1)
 			{
@@ -173,6 +172,14 @@ public class CommandsHandler implements TabExecutor, FilesManagerUtils.Reloadabl
 			else if(args.length == 2 && args[0].equalsIgnoreCase("makewgregion"))
 			{
 				StringUtil.copyPartialMatches(args[1], instance.getStructuresCache().keySet(), completions);
+			}
+			else if(args.length == 2 && args[0].equalsIgnoreCase("whitelist"))
+			{
+				StringUtil.copyPartialMatches(args[1], List.of("add", "remove"), completions);
+			}
+			else if(args.length == 2 && args[0].equalsIgnoreCase("toggle"))
+			{
+				StringUtil.copyPartialMatches(args[1], List.of("build", "whitelist"), completions);
 			}
 			else if(args.length == 2 && args[0].equalsIgnoreCase("reset"))
 			{
@@ -206,6 +213,13 @@ public class CommandsHandler implements TabExecutor, FilesManagerUtils.Reloadabl
 					StringUtil.copyPartialMatches(args[2], instance.getStructuresCache().keySet(), completions);
 				}
 			}
+			else if(args.length == 3 && args[0].equalsIgnoreCase("toggle"))
+			{
+				if(args[1].equalsIgnoreCase("build") || args[1].equalsIgnoreCase("whitelist"))
+				{
+					StringUtil.copyPartialMatches(args[2], instance.getStructuresCache().keySet(), completions);
+				}
+			}
 			else if(args.length == 3 && args[0].equalsIgnoreCase("whitelist"))
 			{
 				if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("remove"))
@@ -219,13 +233,13 @@ public class CommandsHandler implements TabExecutor, FilesManagerUtils.Reloadabl
 				{
 					final Structure structure = instance.getStructuresCache().get(args[2]);
 					final List<String> materials = new ArrayList<>(Stream.of(Material.values()).map(Enum::name).toList());
-					materials.removeAll(structure.getBlocksWhiteList().stream().map(Enum::name).toList());
+					materials.removeAll(structure.getBlocksWhiteList());
 					StringUtil.copyPartialMatches(args[3], materials, completions);
 				}
 				else if(args[1].equalsIgnoreCase("remove"))
 				{
 					final Structure structure = instance.getStructuresCache().get(args[2]);
-					StringUtil.copyPartialMatches(args[3], structure.getBlocksWhiteList().stream().map(Enum::name).toList(), completions);
+					StringUtil.copyPartialMatches(args[3], structure.getBlocksWhiteList(), completions);
 				}
 			}
 			Collections.sort(completions);

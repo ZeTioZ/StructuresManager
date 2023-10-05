@@ -2,20 +2,16 @@ package fr.zetioz.structuresmanager.commands;
 
 import fr.zetioz.structuresmanager.StructuresManager;
 import fr.zetioz.structuresmanager.hooks.SchematicUtilsWE7;
-import fr.zetioz.structuresmanager.objects.Structure;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-
-import java.util.Map;
 
 import static fr.zetioz.coreutils.ColorUtils.sendMessage;
 
 public class SaveStructure
 {
 	private final StructuresManager instance;
-	private YamlConfiguration messages;
-	private String prefix;
+	private final YamlConfiguration messages;
+	private final String prefix;
 
 	public SaveStructure(StructuresManager instance, YamlConfiguration messages)
 	{

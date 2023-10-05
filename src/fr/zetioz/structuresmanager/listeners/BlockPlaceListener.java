@@ -4,34 +4,31 @@ import fr.zetioz.structuresmanager.StructuresManager;
 import fr.zetioz.structuresmanager.hooks.WorldGuardHook;
 import fr.zetioz.structuresmanager.objects.Structure;
 import org.bukkit.Location;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BlockPlaceListener implements Listener
 {
-	private final Map<String, Structure> structuresCache;
-	private final Map<String, List<Location>> blocksLocationsCache;
-	private final Map<String, List<Location>> blocksLocationsAddCache;
-	private final Map<String, List<Location>> blocksLocationsRemoveCache;
+	private final StructuresManager instance;
 
 	public BlockPlaceListener(final StructuresManager instance)
 	{
-		blocksLocationsCache = instance.getBlocksLocationsCache();
-		blocksLocationsAddCache = instance.getBlocksLocationsAddCache();
-		blocksLocationsRemoveCache = instance.getBlocksLocationsRemoveCache();
-		structuresCache = instance.getStructuresCache();
+		this.instance = instance;
 	}
 
 	@EventHandler
 	public void onPlayerBlockPlace(final BlockPlaceEvent event)
 	{
-		if(event.isCancelled()) return;
+		final Map<String, Set<Location>> blocksLocationsCache = instance.getBlocksLocationsCache();
+		final Map<String, Set<Location>> blocksLocationsAddCache = instance.getBlocksLocationsAddCache();
+		final Map<String, Set<Location>> blocksLocationsRemoveCache = instance.getBlocksLocationsRemoveCache();
+		final Map<String, Structure> structuresCache = instance.getStructuresCache();
+
 		final Location location = event.getBlock().getLocation();
 		final List<String> regionIDs = WorldGuardHook.getRegionIDs(location);
 		for(String regionID : regionIDs)
@@ -40,21 +37,20 @@ public class BlockPlaceListener implements Listener
 			final Structure structure = structuresCache.get(regionID);
 			if(!structure.canBuild()
 				|| (structure.isWhiteListActive()
-					&& !structure.getBlocksWhiteList().contains(event.getBlock().getType()))
+					&& !structure.getBlocksWhiteList().contains(event.getBlock().getType().name()))
 			)
 			{
 				event.setCancelled(true);
 				return;
 			}
-			final List<Location> blocksLocations = blocksLocationsCache.getOrDefault(regionID, new ArrayList<>());
-			final List<Location> blocksLocationsToAdd = blocksLocationsAddCache.getOrDefault(regionID, new ArrayList<>());
-			final List<Location> blocksLocationsToRemove = blocksLocationsRemoveCache.getOrDefault(regionID, new ArrayList<>());
+
+			final Set<Location> blocksLocations = blocksLocationsCache.getOrDefault(regionID, new HashSet<>());
+			final Set<Location> blocksLocationsToAdd = blocksLocationsAddCache.getOrDefault(regionID, new HashSet<>());
+			final Set<Location> blocksLocationsToRemove = blocksLocationsRemoveCache.getOrDefault(regionID, new HashSet<>());
 
 			if(blocksLocationsToAdd.contains(location) || blocksLocations.contains(location)) continue;
-			blocksLocations.add(location);
 			blocksLocationsToAdd.add(location);
 			blocksLocationsToRemove.remove(location);
-			blocksLocationsCache.put(regionID, blocksLocations);
 			blocksLocationsAddCache.put(regionID, blocksLocationsToAdd);
 			blocksLocationsRemoveCache.put(regionID, blocksLocationsToRemove);
 		}
@@ -63,37 +59,54 @@ public class BlockPlaceListener implements Listener
 	@EventHandler
 	public void onPlayerBlockMultiPlace(BlockMultiPlaceEvent event)
 	{
-		final Location firstLocation = event.getBlockPlaced().getLocation();
-		final Location secondLocation = event.getBlockAgainst().getLocation();
-		final List<String> regionIDs = WorldGuardHook.getRegionIDs(firstLocation);
-		for(String regionID : regionIDs)
+		final Map<String, Set<Location>> blocksLocationsCache = instance.getBlocksLocationsCache();
+		final Map<String, Set<Location>> blocksLocationsAddCache = instance.getBlocksLocationsAddCache();
+		final Map<String, Set<Location>> blocksLocationsRemoveCache = instance.getBlocksLocationsRemoveCache();
+		final Map<String, Structure> structuresCache = instance.getStructuresCache();
+
+		final Set<Location> blockPartsLocations = new HashSet<>();
+		blockPartsLocations.add(event.getBlock().getLocation());
+
+		if (event.getBlock().getBlockData() instanceof final Bed bed)
 		{
-			if(!structuresCache.containsKey(regionID)) continue;
-			final Structure structure = structuresCache.get(regionID);
-			if(!structure.canBuild()
-				|| (structure.isWhiteListActive()
-					&& !structure.getBlocksWhiteList().contains(event.getBlock().getType()))
-			)
+			final Location bedLocation = event.getBlock().getLocation();
+			if (bed.getPart() == Bed.Part.HEAD)
 			{
-				event.setCancelled(true);
-				return;
+				bedLocation.subtract(bed.getFacing().getDirection());
 			}
+			else
+			{
+				bedLocation.add(bed.getFacing().getDirection());
+			}
+			blockPartsLocations.add(bedLocation);
+		}
 
+		for(Location blockPartLocation : blockPartsLocations)
+		{
+			final List<String> regionIDs = WorldGuardHook.getRegionIDs(blockPartLocation);
+			for(String regionID : regionIDs)
+			{
+				if(!structuresCache.containsKey(regionID)) continue;
+				final Structure structure = structuresCache.get(regionID);
+				if(!structure.canBuild()
+						|| (structure.isWhiteListActive()
+						&& !structure.getBlocksWhiteList().contains(event.getBlock().getType().name()))
+				)
+				{
+					event.setCancelled(true);
+					return;
+				}
 
-			final List<Location> blocksLocations = blocksLocationsCache.getOrDefault(regionID, new ArrayList<>());
-			final List<Location> blocksLocationsToAdd = blocksLocationsAddCache.getOrDefault(regionID, new ArrayList<>());
-			final List<Location> blocksLocationsToRemove = blocksLocationsRemoveCache.getOrDefault(regionID, new ArrayList<>());
+				final Set<Location> blocksLocations = blocksLocationsCache.getOrDefault(regionID, new HashSet<>());
+				final Set<Location> blocksLocationsToAdd = blocksLocationsAddCache.getOrDefault(regionID, new HashSet<>());
+				final Set<Location> blocksLocationsToRemove = blocksLocationsRemoveCache.getOrDefault(regionID, new HashSet<>());
 
-			if(blocksLocationsToAdd.contains(firstLocation) || blocksLocations.contains(firstLocation)) continue;
-			blocksLocations.add(firstLocation);
-			blocksLocationsToAdd.add(firstLocation);
-			blocksLocationsToRemove.remove(firstLocation);
-			blocksLocations.add(secondLocation);
-			blocksLocationsToAdd.add(secondLocation);
-			blocksLocationsToRemove.remove(secondLocation);
-			blocksLocationsCache.put(regionID, blocksLocations);
-			blocksLocationsAddCache.put(regionID, blocksLocationsToAdd);
-			blocksLocationsRemoveCache.put(regionID, blocksLocationsToRemove);
+				if(blocksLocationsToAdd.contains(blockPartLocation) || blocksLocations.contains(blockPartLocation)) continue;
+				blocksLocationsToAdd.add(blockPartLocation);
+				blocksLocationsToRemove.remove(blockPartLocation);
+				blocksLocationsAddCache.put(regionID, blocksLocationsToAdd);
+				blocksLocationsRemoveCache.put(regionID, blocksLocationsToRemove);
+			}
 		}
 	}
 }

@@ -14,8 +14,8 @@ import static fr.zetioz.coreutils.ColorUtils.sendMessage;
 public class RemoveMaterialFromWhitelist
 {
 	private final StructuresManager instance;
-	private YamlConfiguration messages;
-	private String prefix;
+	private final YamlConfiguration messages;
+	private final String prefix;
 
 	public RemoveMaterialFromWhitelist(StructuresManager instance, YamlConfiguration messages)
 	{
@@ -34,23 +34,23 @@ public class RemoveMaterialFromWhitelist
 				sendMessage(sender, messages.getStringList("errors.structure-not-existing"), prefix, "{label}", label, "{struct_name}", args[2]);
 				return true;
 			}
-			if(EnumCheckUtils.isValidEnum(Material.class, args[3]))
+			final String material = args[3].toUpperCase();
+			if(!EnumCheckUtils.isValidEnum(Material.class, material))
 			{
-				sendMessage(sender, messages.getStringList("errors.material-not-existing"), prefix, "{label}", label, "{material}", args[3]);
+				sendMessage(sender, messages.getStringList("errors.material-not-existing"), prefix, "{label}", label, "{material}", material);
 				return true;
 			}
 
 			final Structure structure = structuresCache.get(args[2]);
-			final Material material = Material.valueOf(args[3]);
 
 			if(!structure.getBlocksWhiteList().contains(material))
 			{
-				sendMessage(sender, messages.getStringList("errors.material-not-whitelisted"), prefix, "{label}", label, "{material}", args[3]);
+				sendMessage(sender, messages.getStringList("errors.material-not-whitelisted"), prefix, "{label}", label, "{material}", material);
 				return true;
 			}
 
 			structure.getBlocksWhiteList().remove(material);
-			sendMessage(sender, messages.getStringList("material-remove-success"), prefix, "{label}", label, "{material}", args[3], "{struct_name}", args[2]);
+			sendMessage(sender, messages.getStringList("material-remove-success"), prefix, "{label}", label, "{material}", material, "{struct_name}", args[2]);
 		}
 		else
 		{

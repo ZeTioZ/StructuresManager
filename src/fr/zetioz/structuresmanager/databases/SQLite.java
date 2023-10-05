@@ -26,7 +26,7 @@ public class SQLite extends Database
                 + "     X numeric(32, 4) not null,"
                 + "     Y numeric(32, 4) not null,"
                 + "     Z numeric(32, 4) not null,"
-                + "     primary key(REGION_ID)"
+                + "     primary key(REGION_ID, WORLD, X, Y, Z)"
                 + ");";
         load();
     }

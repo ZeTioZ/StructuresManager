@@ -15,8 +15,8 @@ import static fr.zetioz.coreutils.ColorUtils.sendMessage;
 public class DeleteStructure
 {
 	private final StructuresManager instance;
-	private YamlConfiguration messages;
-	private String prefix;
+	private final YamlConfiguration messages;
+	private final String prefix;
 
 	public DeleteStructure(StructuresManager instance, YamlConfiguration messages)
 	{

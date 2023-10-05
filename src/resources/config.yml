@@ -5,3 +5,5 @@ wg-region-flags:
 # Some examples:
 #  MOB_DAMAGE: true
 #  MOB_SPAWNING: true
+
+debug: false

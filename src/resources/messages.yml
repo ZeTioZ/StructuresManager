@@ -7,6 +7,8 @@ help-command:
   - "&2/{label} place <structure_name> <structure_id> &c» &dPlace the structure you saved at your location"
   - "&2/{label} delete <save/structure> <structure_name> &c» &dDelete the structure you saved"
   - "&2/{label} tp <structure_name> &c» &dTeleport you to the placed structure"
+  - "&2/{label} whitelist <add/remove> <structure_name> <material> &c» &dAdd or remove a material from the whitelist of the structure"
+  - "&2/{label} toggle <build/whitelist> <structure_name> &c» &dToggle the buildable flag or the whitelist of the structure"
   - "&2/{label} reset <structure_id/all> &c» &dReset the structure with the given id or all structures"
   - "&2/{label} makewgregion <structure_id> &c» &dMake a WorldGuard region at the given structure id with the configured flags"
   - "&2/{label} help &c» &dDisplay this help page"

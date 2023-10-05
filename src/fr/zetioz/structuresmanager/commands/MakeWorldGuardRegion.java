@@ -14,9 +14,9 @@ import static fr.zetioz.coreutils.ColorUtils.sendMessage;
 public class MakeWorldGuardRegion
 {
 	private final StructuresManager instance;
-	private YamlConfiguration messages;
-	private YamlConfiguration config;
-	private String prefix;
+	private final YamlConfiguration messages;
+	private final YamlConfiguration config;
+	private final String prefix;
 
 	public MakeWorldGuardRegion(StructuresManager instance, YamlConfiguration config, YamlConfiguration messages)
 	{
